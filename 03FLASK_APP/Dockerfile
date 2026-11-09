@@ -1,8 +1,6 @@
-FROM ubuntu:24.04
+FROM python:3.12.16-alpine3.23
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends python3-flask \
-    && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir flask==3.1.3
 
 COPY app.py /opt/app.py
 
@@ -10,4 +8,4 @@ ENV FLASK_APP=/opt/app.py
 
 EXPOSE 80
 
-ENTRYPOINT ["python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=80"]
+ENTRYPOINT ["python", "-m", "flask", "run", "--host=0.0.0.0", "--port=80"]

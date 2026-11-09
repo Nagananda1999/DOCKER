@@ -11,7 +11,7 @@ Containers on a host all share that host's kernel. The image is the set of files
 
 # 2. Containers
 
-A container is a running environment with its own processes, network, and mounts. Every container on the host shares that host's kernel.
+A Container is a a runnable instance of a Docker Image. A container is a running environment with its own processes, network, and mounts. Every container on the host shares that host's kernel.
 
 Docker used to create containers with **LXC**. From version 0.9 (2014) it used its own **libcontainer**. That code became **runc**.
 
@@ -27,7 +27,7 @@ Starting a container today:
 
 An image is a read-only package of the app, its libraries, and its dependencies.
 
-A container is a running copy of an image. Build or pull the image once, then start as many containers from it as you need.
+A container is a running copy of an image. Build or pull the image once, then start as many containers from it as you need. Version controlled using tags
 
 # 4. How Docker Works
 
@@ -53,4 +53,44 @@ The Docker host is hardware, an OS, and Docker installed on that OS. Docker star
 | Isolation | Processes, network, files | Whole OS |
 
 Containers often run on a VM. The Docker host is virtual, and the containers run on that virtual machine.
+
+# 6. Docker Registry
+
+A Docker Registry is a repository or that hosts multiple repositories which is used to store and distribute Docker Images. Most org has their containerized application available in our docker repositories called docker hub
+
+- **Docker Hub**: the public default
+- **Others**: GitHub Container Registry, Google Artifact Registry, AWS ECR, Azure Container Registry
+
+# 7. Kernel features
+
+Containers share one Linux kernel. On Docker Desktop for Windows, that kernel is the Linux VM's.
+
+Three kernel features make a container work:
+
+- **Namespaces** — isolate processes, network, and mounts
+- **cgroups** — limit CPU, memory, and other resources
+- **UnionFS** — stack image layers into one filesystem
+
+Many containers run on that one kernel. Each stays isolated from the others.
+
+# 8. The LXC family
+
+LXC, LXD, and LXCFS sit on the same kernel features: namespaces and cgroups.
+
+- **LXC** — the original toolkit. Runs a system container: a full Linux userspace with its own init. Feels like a light VM, and still shares the host kernel.
+- **LXD** — a manager on top of LXC. API and CLI for images, snapshots, and day-to-day operations. Not a runtime.
+- **LXCFS** — fixes what the container sees in `/proc`. `cpuinfo` and `meminfo` show the container's limits, not the host's.
+
+# 9. Docker runtime evolution
+
+```text
+LXC → libcontainer → runc → containerd
+```
+
+- **LXC** — early Docker created containers with it.
+- **libcontainer** — Docker's own library. Talks to namespaces and cgroups directly. From 0.9 (2014) this replaced LXC. That code became runc.
+- **runc** — the OCI runtime. Creates the container process, then exits.
+- **containerd** — manages images and the container lifecycle for Docker and Kubernetes. Calls runc to start the process.
+
+containerd is the manager. runc is the starter.
 

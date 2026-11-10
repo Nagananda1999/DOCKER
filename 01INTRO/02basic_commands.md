@@ -123,7 +123,7 @@ docker exec web cat /etc/hosts
 ```
 
 Use `-it` to open an interactive shell.
-
+Use -i alone for piping and -t alone for formatted output.
 ---
 
 ## 9. docker attach
@@ -161,7 +161,7 @@ Downloads an image from a registry.
 docker pull nginx
 docker pull ubuntu
 ```
-
+- Docker hub limits unautheticated pull on particular IP   
 ---
 
 ## 12. docker images
